@@ -1,108 +1,61 @@
 
 ---
 
-# 🧩 PROJECT: **School Management System (Backend Core)**
+# 🏫 **Secondary School Management System**
 
-### 🎯 Goal:
+### 🎯 Overview
 
-A backend-style Go project (CLI or REST-ready) that teaches:
+A comprehensive school management system built with Go, designed specifically for secondary schools to manage academic, administrative, and student-related operations efficiently.
 
-* Data structures (structs, maps, slices)
-* Error handling
-* Functions, methods, interfaces
-* File I/O and JSON (for backup)
-* Database connection (Postgres/MySQL/SQLite)
-* CRUD operations
-* Concurrency basics (auto backup or notifications)
+### ✨ Key Features
+
+* **Student Information Management**
+* **Academic Record Keeping**
+* **Timetable & Attendance**
+* **Examination & Grading**
+* **Staff & Teacher Management**
+* **Parent & Guardian Portal**
+* **Financial Management**
+* **Library & Resource Center**
+* **Communication Tools**
+* **Reporting & Analytics**
 
 ---
 
-## ⚙️ **PHASE 1 — CORE STRUCTURE**
+## 🏗️ **Project Structure**
 
-### **🗂 Folder Layout (clean & scalable)**
+### **📂 Folder Layout**
 
 ```
-student-mgmt/
+school-management/
 │
-├── main.go                # Entry point
-├── go.mod
+├── cmd/
+│   └── server/           # Application entry point
+│       └── main.go
 │
-├── config/                # DB connection + app configs
-│   └── config.go
+├── internal/
+│   ├── api/              # API handlers and routes
+│   ├── config/           # Configuration management
+│   ├── domain/           # Core business models
+│   │   ├── academic/     # Academic entities
+│   │   ├── users/        # User management
+│   │   └── finance/      # Financial entities
+│   │
+│   ├── repository/       # Data access layer
+│   │   ├── mysql/        # MySQL implementations
+│   │   └── postgres/     # PostgreSQL implementations
+│   │
+│   ├── service/          # Business logic
+│   └── utils/            # Shared utilities
 │
-├── models/                # Structs & DB models
-│   └── student.go
-│
-├── repository/            # Database operations
-│   └── student_repo.go
-│
-├── services/              # Business logic
-│   └── student_service.go
-│
-├── handlers/              # CLI or HTTP handlers (optional)
-│   └── student_handler.go
-│
-├── utils/                 # Helper functions (logging, errors, etc.)
-│   └── logger.go
-│
-└── data/                  # Backup files (JSON)
-    └── students_backup.json
-```
-
----
-
-## 🧱 **CORE FEATURES TO IMPLEMENT**
-
-### **1. Student CRUD**
-
-* ✅ Create new student
-* ✅ View all students
-* ✅ Update student info (age, department, etc.)
-* ✅ Delete student
-
-**Database fields:**
-
-| Field      | Type      | Description                |
-| ---------- | --------- | -------------------------- |
-| id         | int       | Auto increment primary key |
-| name       | string    | Student’s full name        |
-| email      | string    | Unique email               |
-| age        | int       | Student’s age              |
-| department | string    | Department name            |
-| created_at | timestamp | Creation time              |
-| updated_at | timestamp | Update time                |
-
----
-
-### **2. Course Management**
-
-* ✅ Create course
-* ✅ Assign students to courses (many-to-many relationship)
-* ✅ View students per course
-* ✅ Remove student from course
-
-**Tables:**
-
-* `courses`: id, name, unit
-* `student_courses`: student_id, course_id (junction table)
-
----
-
-### **3. Grade Tracking**
-
-* ✅ Add grades for a student in a course
-* ✅ Calculate GPA
-* ✅ View student transcript
-
-**Table:**
-
-* `grades`: id, student_id, course_id, score, grade_letter
-
----
-
+├── migrations/           # Database migrations
+├── pkg/                  # Reusable packages
+├── web/                  # Frontend assets (if applicable)
 ### **4. Search & Filtering**
 
-* ✅ Search student by name, email, or department
+* **Student Search**
+  - Search by name, email, or department
+  - Filter by department or grade level
 * ✅ Filter students by department or grade level
 
 **Concepts used:**
