@@ -1,8 +1,6 @@
 module school-management-backend
 
-go 1.25.1
-
-toolchain go1.25.1
+go 1.25.0
 
 require github.com/joho/godotenv v1.5.1 // direct
 
