@@ -1,0 +1,37 @@
+# Render Blueprint for School Management System
+# Reference: https://render.com/docs/blueprint-spec
+
+# Main web service
+services:
+  - type: web
+    name: school-management-system
+    env: go
+    buildCommand: go mod download && go build -o school-management-system
+    startCommand: ./school-management-system
+    envVars:
+      - key: GIN_MODE
+        value: release
+      - key: DATABASE_URL
+        fromDatabase:
+          name: school-management-db
+          property: connectionString
+    plan: free
+
+# Database service
+databases:
+  - name: school-management-db
+    databaseName: school_management
+    user: school_management_user
+    plan: free
+    upgradePlan: true
+
+# Environment variables needed for the application
+# These can also be set in the Render dashboard
+# Uncomment and modify as needed
+# envVars:
+#   - key: JWT_SECRET
+#     generateValue: true
+#   - key: PORT
+#     value: 10000
+#   - key: ENVIRONMENT
+#     value: production
