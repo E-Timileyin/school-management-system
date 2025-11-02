@@ -6,7 +6,7 @@ databases:
     databaseName: school_management
     user: school_management_user
     plan: free
-    ipAllowList: [] # required key even if empty
+    ipAllowList: [] # allow all connections from Render services by default
 
 services:
   - type: web
@@ -16,12 +16,21 @@ services:
     buildCommand: go mod download && go build -o school-management-system ./cmd/server
     startCommand: ./school-management-system
     autoDeploy: true
+
     envVars:
+      # --- Go environment ---
+      - key: GO_VERSION
+        value: 1.25.1
+
       - key: GIN_MODE
         value: release
+
+      # --- Database connection ---
       - key: DATABASE_URL
         fromDatabase:
           name: school-management-db
           property: connectionString
+
+      # --- Web server port (Render injects its own too) ---
       - key: PORT
         value: 8080
