@@ -13,7 +13,7 @@ services:
     name: school-management-system
     env: go
     plan: free
-    buildCommand: go mod download && go build -o school-management-system
+    buildCommand: go mod download && go build -o school-management-system ./cmd/server
     startCommand: ./school-management-system
     autoDeploy: true
     envVars:
