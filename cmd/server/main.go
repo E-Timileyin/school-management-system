@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"golang-tutorial-backend/internal/config"
+	"golang-tutorial-backend/internal/handlers"
+	"golang-tutorial-backend/internal/routes"
 )
 
 func main() {
@@ -51,7 +53,15 @@ func main() {
 		})
 	})
 
+	// Initialize handlers
+	authHandler := handlers.NewAuthHandler()
+
+	// Setup routes
+	authRoutes := routes.NewAuthRoutes(authHandler)
+	authRoutes.SetupRoutes(router)
+
 	// Start the server
+	log.Println("Server is running on http://localhost:8080")
 	if err := router.Run(":8080"); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
