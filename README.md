@@ -1,190 +1,150 @@
 
----
+# 🏫 School Management System
 
-# 🏫 **Secondary School Management System**
+[![Go Report Card](https://goreportcard.com/badge/github.com/yourusername/school-management-system)](https://goreportcard.com/report/github.com/yourusername/school-management-system)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Go Reference](https://pkg.go.dev/badge/github.com/yourusername/school-management-system.svg)](https://pkg.go.dev/github.com/yourusername/school-management-system)
 
-### 🎯 Overview
+A comprehensive, production-ready school management system built with Go (Gin framework) and PostgreSQL. Designed to streamline school operations, enhance communication between stakeholders, and provide valuable insights into academic performance.
 
-A comprehensive school management system built with Go, designed specifically for secondary schools to manage academic, administrative, and student-related operations efficiently.
+## ✨ Features
 
-### ✨ Key Features
+### 👨‍🎓 For Students
+- View class schedules and assignments
+- Submit assignments and track grades
+- Access learning resources
+- Check attendance records
+- View academic progress
 
-* **Student Information Management**
-* **Academic Record Keeping**
-* **Timetable & Attendance**
-* **Examination & Grading**
-* **Staff & Teacher Management**
-* **Parent & Guardian Portal**
-* **Financial Management**
-* **Library & Resource Center**
-* **Communication Tools**
-* **Reporting & Analytics**
+### 👩‍🏫 For Teachers
+- Manage class attendance
+- Record and track student grades
+- Create and grade assignments
+- Communicate with students and parents
+- Access teaching schedule
 
----
+### 👨‍👩‍👧 For Parents
+- Monitor child's academic progress
+- View attendance and grades
+- Communicate with teachers
+- Access school announcements
+- View report cards
 
-## 🏗️ **Project Structure**
+### 🏫 For Administrators
+- User and role management
+- Academic year and class organization
+- System configuration
+- Generate comprehensive reports
+- Manage school resources
 
-### **📂 Folder Layout**
+### 📚 Library Management
+- Book catalog and inventory
+- Check-in/check-out system
+- Fine management
+- Resource tracking
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Go 1.20+
+- PostgreSQL 13+
+- Git
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/school-management-system.git
+   cd school-management-system
+   ```
+
+2. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   # Update the .env file with your configuration
+   ```
+
+3. **Install dependencies**
+   ```bash
+   go mod download
+   ```
+
+4. **Run database migrations**
+   ```bash
+   # Command to run migrations will be added here
+   ```
+
+5. **Start the server**
+   ```bash
+   go run cmd/server/main.go
+   ```
+
+## 🏗️ Project Structure
 
 ```
-school-management/
+school-management-system/
 │
 ├── cmd/
 │   └── server/           # Application entry point
-│       └── main.go
+│       └── main.go       # Main application file
 │
 ├── internal/
-│   ├── api/              # API handlers and routes
-│   ├── config/           # Configuration management
-│   ├── domain/           # Core business models
-│   │   ├── academic/     # Academic entities
-│   │   ├── users/        # User management
-│   │   └── finance/      # Financial entities
-│   │
-│   ├── repository/       # Data access layer
-│   │   ├── mysql/        # MySQL implementations
-│   │   └── postgres/     # PostgreSQL implementations
-│   │
-│   ├── service/          # Business logic
-│   └── utils/            # Shared utilities
+│   ├── config/          # Configuration management
+│   ├── handler/         # HTTP request handlers
+│   ├── middleware/      # HTTP middleware
+│   ├── model/           # Database models
+│   ├── repository/      # Data access layer
+│   ├── routes/          # API route definitions
+│   └── service/         # Business logic
 │
-├── migrations/           # Database migrations
-├── pkg/                  # Reusable packages
-├── web/                  # Frontend assets (if applicable)
-### **4. Search & Filtering**
-
-* **Student Search**
-  - Search by name, email, or department
-  - Filter by department or grade level
-* ✅ Filter students by department or grade level
-
-**Concepts used:**
-
-* Query params or filter functions
-* SQL `LIKE` or `WHERE` conditions
-* Struct filtering if in-memory
-
----
-
-### **5. Backup & Restore**
-
-* ✅ Export all students to JSON file (`data/students_backup.json`)
-* ✅ Import from backup JSON
-* ✅ Auto-backup feature using GoRoutines
-
-**Concepts used:**
-
-* `encoding/json`
-* File I/O (`os.WriteFile`, `os.ReadFile`)
-* Goroutines (`go func(){}`)
-
----
-
-### **6. Logging & Error Handling**
-
-* ✅ Log every create/update/delete action
-* ✅ Centralized error handling in `utils/logger.go`
-* ✅ Custom error struct for business logic
-
-**Concepts used:**
-
-* Go’s `log` package or custom logger
-* Struct-based error return (like `type AppError struct`)
-
----
-
-### **7. DB Connection Layer (config/)**
-
-* ✅ Load DB config from `.env`
-* ✅ Use `database/sql` or `gorm.io/gorm` for ORM
-* ✅ Central connection management
-
-**Example:**
-
-```go
-package config
-
-import (
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-	"log"
-	"os"
-)
-
-var DB *gorm.DB
-
-func ConnectDB() {
-	dsn := os.Getenv("DATABASE_URL")
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatalf("DB connection failed: %v", err)
-	}
-	DB = db
-}
+├── migrations/          # Database migrations
+├── pkg/                 # Reusable packages
+└── docs/                # API documentation
 ```
 
----
+## 🔧 Configuration
 
-### **8. Business Logic (services/)**
+Copy the example environment file and update the values:
 
-* Validate requests (no duplicate emails)
-* Calculate GPA logic
-* Handle student-course relationships
+```env
+# Server
+PORT=8080
+ENV=development
 
----
+# Database
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=yourpassword
+DB_NAME=school_management
+DB_SSLMODE=disable
 
-### **9. Concurrency (optional but powerful)**
+# JWT
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRATION=24h
+```
 
-* ✅ Auto backup data to file every 30s using Goroutine
-* ✅ Use a channel to gracefully stop background jobs on shutdown
+## 📚 API Documentation
 
----
+API documentation is available at `/swagger` when running in development mode.
 
-### **10. CLI or API Interface**
+## 🤝 Contributing
 
-You can pick one of two interfaces:
+Contributions are welcome! Please read our [contributing guidelines](CONTRIBUTING.md) to get started.
 
-#### **Option A — CLI (for Fundamentals)**
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-* Use `fmt.Scanln` to interact
-* Run options: add student, view student, backup, exit
+## 📄 License
 
-#### **Option B — API (when you start Gin)**
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-* Expose routes: `/students`, `/courses`, `/grades`
-* Migrate handlers → Gin later with minimal refactor
+## 🙏 Acknowledgments
 
----
-
-## 🧠 **WHAT YOU’LL MASTER FROM THIS SINGLE PROJECT**
-
-| Concept              | How You’ll Use It                         |
-| -------------------- | ----------------------------------------- |
-| Variables, Types     | Input handling and struct fields          |
-| Functions            | CRUD logic, utilities                     |
-| Structs              | Student, Course, Grade models             |
-| Maps/Slices          | In-memory caches                          |
-| Methods              | Attach logic to structs                   |
-| Interfaces           | Abstract repository/service               |
-| Pointers             | Pass and update structs                   |
-| Error Handling       | Return `error` gracefully                 |
-| JSON                 | Backup/export system                      |
-| File I/O             | Read/write backups                        |
-| Concurrency          | Background tasks (auto-save)              |
-| Database             | GORM or SQL-level CRUD                    |
-| Project Architecture | Config → Model → Repo → Service → Handler |
-
----
-
-## 🧭 LEARNING STRATEGY (6-Week Build Plan)
-
-| Week | Focus                                | Deliverable                           |
-| ---- | ------------------------------------ | ------------------------------------- |
-| 1    | Basic Go syntax, structs, loops, I/O | CLI scaffold (menu + input)           |
-| 2    | Functions, slices, maps              | CRUD in-memory                        |
-| 3    | GORM + DB models                     | Persist data to Postgres              |
-| 4    | Service + Repo layer                 | Clean separation of logic             |
-| 5    | File handling + backup               | Auto-save feature                     |
-| 6    | Goroutines + polish                  | Background jobs, error handling, docs |
-
----
+- [Gin Web Framework](https://github.com/gin-gonic/gin)
+- [GORM](https://gorm.io/)
+- [JWT Go](https://github.com/golang-jwt/jwt)
