@@ -1,12 +1,10 @@
 # Render Blueprint for School Management System
-# Reference: https://render.com/docs/blueprint-spec
 
 databases:
   - name: school-management-db
     databaseName: school_management
     user: school_management_user
     plan: free
-    ipAllowList: [] # allow all connections from Render services by default
 
 services:
   - type: web
@@ -18,19 +16,20 @@ services:
     autoDeploy: true
 
     envVars:
-      # --- Go environment ---
-      - key: GO_VERSION
-        value: 1.25.1
-
+      # Go/Gin environment
       - key: GIN_MODE
         value: release
 
-      # --- Database connection ---
+      # Database URL automatically injected from the database service
       - key: DATABASE_URL
         fromDatabase:
           name: school-management-db
           property: connectionString
 
-      # --- Web server port (Render injects its own too) ---
+      # Server port
       - key: PORT
         value: 8080
+
+      # JWT secret for authentication
+      - key: JWT_SECRET
+        generateValue: true
