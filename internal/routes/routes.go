@@ -8,24 +8,35 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
-	"school-management-backend/internal/handlers"
+	"school-management-backend/internal/handler"
 	"school-management-backend/internal/middlewares"
+	"school-management-backend/internal/repository"
+	"school-management-backend/internal/service"
 )
 
 // SetupRouter initializes all the routes for the application
 func SetupRouter(db *gorm.DB) *gin.Engine {
 	router := gin.Default()
 
+	// Initialize repositories
+	authService := service.NewAuthService(db)
+	libraryRepo := repository.NewLibraryRepository(db)
+	libraryService := service.NewLibraryService(libraryRepo)
+
 	// Initialize handlers
-	authHandler := handlers.NewAuthHandler(db)
+	authHandler := handler.NewAuthHandler(authService)
+	libraryHandler := handler.NewLibraryHandler(libraryService)
 
 	// Get JWT secret
 	jwtSecret := getJWTSecret()
 
-	// Setup routes
+	// Setup public routes
 	setupHealthCheck(router, db)
 	setupAuthRoutes(router, authHandler)
-	setupProtectedRoutes(router, jwtSecret)
+
+	// Setup protected routes
+	api := setupProtectedRoutes(router, jwtSecret)
+	setupLibraryRoutes(api, libraryHandler)
 
 	return router
 }
@@ -62,23 +73,19 @@ func setupHealthCheck(router *gin.Engine, db *gorm.DB) {
 }
 
 // setupAuthRoutes configures all authentication related routes
-func setupAuthRoutes(router *gin.Engine, authHandler *handlers.AuthHandler) {
+func setupAuthRoutes(router *gin.Engine, authHandler *handler.AuthHandler) {
 	authGroup := router.Group("/api/v1/auth")
 	{
-		authGroup.POST("/signup", authHandler.Signup)
 		authGroup.POST("/login", authHandler.Login)
 	}
 }
 
 // setupProtectedRoutes configures routes that require authentication
-func setupProtectedRoutes(router *gin.Engine, jwtSecret string) {
-	// All routes under this group will require a valid JWT token
-	protected := router.Group("/api/v1")
-	protected.Use(middlewares.AuthMiddleware(jwtSecret))
-	
-	// Example protected routes:
-	// protected.GET("/profile", profileHandler.GetProfile)
-	// protected.PUT("/profile", profileHandler.UpdateProfile)
+// and returns the API router group
+func setupProtectedRoutes(router *gin.Engine, jwtSecret string) *gin.RouterGroup {
+	api := router.Group("/api")
+	api.Use(middlewares.AuthMiddleware(jwtSecret))
+	return api
 }
 
 // getJWTSecret retrieves the JWT secret from environment variables
