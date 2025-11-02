@@ -1,4 +1,4 @@
-module golang-tutorial-backend
+module school-management-backend
 
 go 1.25.1
 
@@ -50,3 +50,5 @@ require (
 	golang.org/x/tools v0.38.0 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 )
+
+require github.com/golang-jwt/jwt/v5 v5.3.0 // direct

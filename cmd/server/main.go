@@ -1,68 +1,70 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"golang-tutorial-backend/internal/config"
-	"golang-tutorial-backend/internal/handlers"
-	"golang-tutorial-backend/internal/routes"
+
+	"school-management-backend/internal/config"
+	"school-management-backend/internal/routes"
 )
 
 func main() {
-	// Load environment variables
+	// Load environment variables from .env.local file
 	if err := godotenv.Load(".env.local"); err != nil {
-		log.Fatal("Error loading .env.local file")
+		log.Println("Could not load .env.local file, using system environment variables")
 	}
 
-	// Connect to database
+	// Connect to the database
 	if err := config.ConnectDB(); err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	// Initialize Gin router
-	router := gin.Default()
+	// Initialize the router with all routes
+	router := routes.SetupRouter(config.DB)
 
-	// Health check endpoint
-	router.GET("/health", func(c *gin.Context) {
-		db, err := config.DB.DB()
-		if err != nil {
-			c.JSON(http.StatusServiceUnavailable, gin.H{
-				"status":  "error",
-				"message": "Database connection error",
-				"error":   err.Error(),
-			})
-			return
-		}
-
-		// Test the database connection
-		if err := db.Ping(); err != nil {
-			c.JSON(http.StatusServiceUnavailable, gin.H{
-				"status":  "error",
-				"message": "Database ping failed",
-				"error":   err.Error(),
-			})
-			return
-		}
-
-		c.JSON(http.StatusOK, gin.H{
-			"status":  "ok",
-			"message": "Server is healthy and database connection is active",
-		})
-	})
-
-	// Initialize handlers
-	authHandler := handlers.NewAuthHandler()
-
-	// Setup routes
-	authRoutes := routes.NewAuthRoutes(authHandler)
-	authRoutes.SetupRoutes(router)
+	// Configure trusted proxies
+	if err := router.SetTrustedProxies([]string{"127.0.0.1"}); err != nil {
+		log.Printf("Warning: Failed to set trusted proxies: %v", err)
+	}
 
 	// Start the server
-	log.Println("Server is running on http://localhost:8080")
-	if err := router.Run(":8080"); err != nil {
-		log.Fatalf("Failed to start server: %v", err)
+	serverAddr := ":8080"
+	log.Printf("Server starting on http://localhost%s\n", serverAddr)
+	
+	// Create a channel to listen for interrupt signals
+	server := &http.Server{
+		Addr:    serverAddr,
+		Handler: router,
 	}
+
+	// Start the server in a goroutine
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Failed to start server: %v", err)
+		}
+	}()
+
+	// Wait for interrupt signal to gracefully shut down the server
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+	<-quit
+	log.Println("Shutting down server...")
+
+	// Create a deadline to wait for
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Shutdown the server gracefully
+	if err := server.Shutdown(ctx); err != nil {
+		log.Fatalf("Server forced to shutdown: %v", err)
+	}
+
+	log.Println("Server exited properly")
 }
