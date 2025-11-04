@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"gorm.io/gorm"
-	"school-management-backend/internal/model"
+	"github.com/E-Timileyin/school-management-system/internal/model"
 )
 
 type LibraryRepository struct {

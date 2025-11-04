@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"net/http"
-	"school-management-backend/internal/utils"
+	"github.com/E-Timileyin/school-management-system/internal/utils"
 	"strings"
 
 	"github.com/gin-gonic/gin"

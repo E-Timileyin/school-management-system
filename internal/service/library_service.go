@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"school-management-backend/internal/model"
-	"school-management-backend/internal/repository"
+	"github.com/E-Timileyin/school-management-system/internal/model"
+	"github.com/E-Timileyin/school-management-system/internal/repository"
 )
 
 type LibraryService struct {

@@ -3,7 +3,7 @@ package utils
 import (
 	"time"
 
-	"school-management-backend/internal/model"
+	"github.com/E-Timileyin/school-management-system/internal/model"
 
 	"github.com/golang-jwt/jwt/v5"
 )

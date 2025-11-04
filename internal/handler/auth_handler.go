@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"school-management-backend/internal/service"
+	"github.com/E-Timileyin/school-management-system/internal/service"
 )
 
 // AuthHandler handles signup and login requests

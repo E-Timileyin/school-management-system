@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"school-management-backend/internal/model"
-	"school-management-backend/internal/service"
+	"github.com/E-Timileyin/school-management-system/internal/model"
+	"github.com/E-Timileyin/school-management-system/internal/service"
 )
 
 type LibraryHandler struct {

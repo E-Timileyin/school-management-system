@@ -1,9 +1,6 @@
 package model
 
 import (
-	"errors"
-	"time"
-
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -23,52 +20,33 @@ type User struct {
 	gorm.Model
 
 	// Authentication
-	Email          string    `gorm:"uniqueIndex;not null;size:255"`
-	PasswordHash   string    `gorm:"not null;size:255"`
-	LastLogin      time.Time `gorm:"default:null"`
-	Role           UserRole  `gorm:"type:user_role;default:'student'"`
-	IsActive       bool      `gorm:"default:false"`
-	EmailVerified  bool      `gorm:"default:false"`
-	
-	// Profile Information
-	FirstName      string    `gorm:"size:100;not null"`
-	LastName       string    `gorm:"size:100;not null"`
-	DateOfBirth    time.Time `gorm:"type:date"`
-	PhoneNumber    string    `gorm:"size:20"`
-	ProfilePicture string    `gorm:"size:255"`
-	
-	// Account Status
-	IsSuspended   bool      `gorm:"default:false"`
-	SuspendedAt   time.Time `gorm:"default:null"`
-	SuspendedBy   uint      // ID of the admin who suspended this user
-	LastPasswordChange time.Time `gorm:"default:CURRENT_TIMESTAMP"`
+	Email     string   `gorm:"uniqueIndex;not null"`
+	Password  string   `gorm:"not null"` // Maps to 'password' column in database
+	FirstName string   `gorm:"not null"`
+	LastName  string   `gorm:"not null"`
+	Role      UserRole `gorm:"not null"`
 }
 
 // BeforeCreate is a GORM hook that runs before creating a user
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
-	u.LastPasswordChange = time.Now()
+	if u.Role == "" {
+		u.Role = RoleStudent
+	}
 	return nil
 }
 
-// SetPassword hashes the password and stores it in the PasswordHash field
 func (u *User) SetPassword(password string) error {
-	if len(password) < 8 {
-		return errors.New("password must be at least 8 characters long")
-	}
-	
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
-	
-	u.PasswordHash = string(hashedPassword)
-	u.LastPasswordChange = time.Now()
+	u.Password = string(hashedPassword)
 	return nil
 }
 
-// CheckPassword compares the provided password with the stored hash
+// CheckPassword verifies the password
 func (u *User) CheckPassword(password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password))
+	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 }
 
 // FullName returns the user's full name

@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"school-management-backend/internal/handler"
+	"github.com/E-Timileyin/school-management-system/internal/handler"
 )
 
 // setupLibraryRoutes configures all library related routes
