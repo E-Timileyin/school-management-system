@@ -131,10 +131,18 @@ func setupAdminRoutes(router *gin.RouterGroup, adminHandler *handler.AdminHandle
 	courses := router.Group("/courses")
 	{
 		courses.POST("", adminHandler.CreateCourse)
-		courses.PUT("/:id", adminHandler.UpdateCourse)
-		courses.DELETE("/:id", adminHandler.DeleteCourse)
-		courses.POST("/:id/enrollments", adminHandler.EnrollStudent)
-		courses.DELETE("/:courseId/enrollments/:studentId", adminHandler.RemoveEnrollment)
+		// Use a more specific path for course operations
+		course := courses.Group("/course")
+		{
+			course.PUT("/:id", adminHandler.UpdateCourse)
+			course.DELETE("/:id", adminHandler.DeleteCourse)
+			// Enrollment management
+			enrollments := course.Group("/:id/enrollments")
+			{
+				enrollments.POST("", adminHandler.EnrollStudent)
+				enrollments.DELETE("/:studentId", adminHandler.RemoveEnrollment)
+			}
+		}
 	}
 }
 
