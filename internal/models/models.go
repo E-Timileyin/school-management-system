@@ -38,7 +38,7 @@ func (u *User) CheckPassword(password string) error {
 // Student represents a student in the system
 type Student struct {
 	gorm.Model
-	UserID      uint   `gorm:"uniqueIndex;not null"` // Reference to User
+	UserID      uint   `gorm:"uniqueIndex;not null"`
 	User        User   `gorm:"foreignKey:UserID"`
 	DateOfBirth string `gorm:"type:date"`
 	Address     string
@@ -48,7 +48,7 @@ type Student struct {
 // Teacher represents a teacher in the system
 type Teacher struct {
 	gorm.Model
-	UserID  uint   `gorm:"uniqueIndex;not null"` // Reference to User
+	UserID  uint   `gorm:"uniqueIndex;not null"`
 	User    User   `gorm:"foreignKey:UserID"`
 	Subject string `gorm:"not null"`
 	Phone   string
@@ -60,15 +60,15 @@ type Course struct {
 	Name        string `gorm:"not null"`
 	Code        string `gorm:"uniqueIndex;not null"`
 	Description string
-	TeacherID   uint   `gorm:"not null"` // Reference to Teacher
+	TeacherID   uint    `gorm:"not null"` // Reference to Teacher
 	Teacher     Teacher `gorm:"foreignKey:TeacherID"`
 }
 
 // Enrollment represents a student's enrollment in a course
 type Enrollment struct {
 	gorm.Model
-	StudentID uint    `gorm:"not null"` // Reference to Student
-	CourseID  uint    `gorm:"not null"` // Reference to Course
+	StudentID uint    `gorm:"not null"`
+	CourseID  uint    `gorm:"not null"`
 	Grade     *string // Nullable grade
 }
 
